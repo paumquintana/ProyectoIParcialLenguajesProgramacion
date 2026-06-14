@@ -28,12 +28,11 @@ class LibroGeneroSeeder extends Seeder
         foreach ($generos as $subject) {
             // 2. Subjects API: trae la LISTA de obras del género.
             //    OJO: este endpoint NO trae sinopsis, ISBN ni páginas.
-            $respuesta = Http::withHeaders($this->headers)
-                ->get("https://openlibrary.org/subjects/{$subject}.json", [
-                    'limit' => 20,
-                ]);
+            $respuesta = $this->obtener("https://openlibrary.org/subjects/{$subject}.json", [
+                'limit' => 20,
+            ]);
 
-            if ($respuesta->failed()) {
+            if (!$respuesta) {
                 $this->command->warn("No se pudo traer el género: {$subject}");
                 continue;
             }
@@ -76,6 +75,7 @@ class LibroGeneroSeeder extends Seeder
                         'sinopsis'         => $sinopsis,
                         'isbn'             => $isbn,
                         'total_paginas'    => $totalPaginas,
+                        'cover_id'         => $work['cover_id'] ?? null,
                     ]);
                 }
 
@@ -87,6 +87,27 @@ class LibroGeneroSeeder extends Seeder
 
             // 5. Pausa para respetar el límite de Open Library.
             sleep(1);
+        }
+    }
+
+    /**
+     * Hace una petición GET a Open Library de forma segura:
+     * - espera hasta 20s por respuesta,
+     * - reintenta hasta 3 veces si falla (con 2s de pausa),
+     * - si aun así falla, devuelve null en vez de tumbar todo el seeder.
+     */
+    private function obtener(string $url, array $params = [])
+    {
+        try {
+            $resp = Http::withHeaders($this->headers)
+                ->timeout(20)
+                ->retry(3, 2000)
+                ->get($url, $params);
+
+            return $resp->successful() ? $resp : null;
+        } catch (\Throwable $e) {
+            $this->command->warn("Petición fallida: {$url}");
+            return null;
         }
     }
 
@@ -115,12 +136,11 @@ class LibroGeneroSeeder extends Seeder
      */
     private function traerSinopsis(string $workKey): ?string
     {
-        $resp = Http::withHeaders($this->headers)
-            ->get("https://openlibrary.org{$workKey}.json");
+        $resp = $this->obtener("https://openlibrary.org{$workKey}.json");
 
         usleep(300000); // 0.3s entre llamadas
 
-        if ($resp->failed()) {
+        if (!$resp) {
             return null;
         }
 
@@ -140,12 +160,11 @@ class LibroGeneroSeeder extends Seeder
      */
     private function traerIsbnYPaginas(string $workKey): array
     {
-        $resp = Http::withHeaders($this->headers)
-            ->get("https://openlibrary.org{$workKey}/editions.json", ['limit' => 100]);
+        $resp = $this->obtener("https://openlibrary.org{$workKey}/editions.json", ['limit' => 100]);
 
         usleep(300000); // 0.3s entre llamadas
 
-        if ($resp->failed()) {
+        if (!$resp) {
             return [null, null];
         }
 

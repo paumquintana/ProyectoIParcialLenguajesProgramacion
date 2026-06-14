@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('ol_key')->nullable();
             $table->text('sinopsis')->nullable();
             $table->integer('anio_publicacion')->nullable();
+            $table->unsignedBigInteger('cover_id')->nullable(); // id de portada en Open Library
             $table->timestamps();
         });
     }
