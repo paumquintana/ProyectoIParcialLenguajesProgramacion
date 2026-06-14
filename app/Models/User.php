@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['alias', 'nombre', 'apellido', 'fecha_nacimiento', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -25,11 +25,16 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'fecha_nacimiento' => 'date',
             'password' => 'hashed',
         ];
     }
 
     public function lecturas() { return $this->hasMany(LectorLibro::class); }
+
+    public function grupos()
+    {
+        return $this->belongsToMany(Grupo::class, 'lector_grupo', 'user_id', 'grupo_id');
+    }
 
 }

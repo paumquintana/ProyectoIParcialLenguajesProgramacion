@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('lector_grupo', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('grupo_id')->constrained('grupos')->onDelete('cascade');
             $table->timestamps();
         });
     }
