@@ -29,4 +29,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function lecturas() { return $this->hasMany(LectorLibro::class); }
+
 }
