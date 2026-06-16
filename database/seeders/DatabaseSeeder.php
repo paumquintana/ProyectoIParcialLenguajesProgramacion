@@ -15,11 +15,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Usuario de prueba de Paula.
         User::factory()->create([
-            'name' => 'Test User',
+            'nombre' => 'Test',
+            'apellido' => 'User',
             'email' => 'test@example.com',
+        ]);
+
+        $this->call([
+            // Esto es para elegir una base de datos
+            //
+            // Opción A — Local (por defecto): 18 libros curados. Carga rápida.
+            //            Si hay internet, baja la portada real de cada libro;
+            //            si no, usa una portada generada con el título. 
+            LibrosOfflineSeeder::class,
+            //
+            // Opción B — API Open Library: catálogo más grande bajado por género (~6 min,
+            //            requiere internet). Para usarla: comenta la línea de arriba
+            //            (la opción A) y descomenta la línea de abajo (Opción B).
+            // LibroGeneroSeeder::class,
+            //
+            // =============================================================
+
+            DemoSeeder::class,        // usuario demo + biblioteca, grupos y posts
+            DemoDanielSeeder::class,  // usuario daniel123 leyendo la saga de Dune
         ]);
     }
 }
