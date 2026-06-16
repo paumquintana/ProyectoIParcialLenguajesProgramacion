@@ -104,6 +104,7 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             padding: 1.4rem 1.6rem;
+            min-height: calc(100vh - 7rem);
         }
 
         /* ---------- Barra superior ---------- */

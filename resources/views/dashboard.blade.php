@@ -12,32 +12,24 @@
             <a href="{{ route('biblioteca.index') }}" class="pill-btn">Ver biblioteca</a>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-4">
             @forelse ($leyendo as $lectura)
-                <div class="col-sm-6">
-                    <div class="card h-100">
-                        <div class="card-body d-flex gap-3">
-                            <a href="{{ route('libros.show', $lectura->libro) }}" class="book flex-shrink-0" style="width:60px">
-                                @include('partials.portada', ['libro' => $lectura->libro])
-                            </a>
-                            <div class="flex-grow-1 d-flex flex-column" style="min-width:0">
-                                <a href="{{ route('libros.show', $lectura->libro) }}" class="book-title text-decoration-none text-truncate" title="{{ $lectura->libro->titulo }}">
-                                    {{ $lectura->libro->titulo }}
-                                </a>
-                                <div class="text-muted small text-truncate mb-2">
-                                    {{ $lectura->libro->autor->nombre ?? '' }} {{ $lectura->libro->autor->apellido ?? '' }}
-                                </div>
-                                <div class="mt-auto">
-                                    <div class="d-flex justify-content-between align-items-end mb-1">
-                                        <span class="fw-display" style="font-size:1.05rem;color:var(--coral);line-height:1">{{ $lectura->progreso }}%</span>
-                                        <span class="text-muted" style="font-size:.7rem">{{ $lectura->paginas_leidas }} / {{ $lectura->libro->total_paginas ?? '?' }} pág.</span>
-                                    </div>
-                                    <div class="progress" style="height:8px">
-                                        <div class="progress-bar" role="progressbar" style="width: {{ $lectura->progreso }}%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-6 col-sm-4 col-xl-3">
+                    <a href="{{ route('libros.show', $lectura->libro) }}" class="book mb-2">
+                        @include('partials.portada', ['libro' => $lectura->libro])
+                    </a>
+                    <a href="{{ route('libros.show', $lectura->libro) }}" class="book-title d-block text-truncate text-decoration-none" title="{{ $lectura->libro->titulo }}">
+                        {{ $lectura->libro->titulo }}
+                    </a>
+                    <p class="small text-muted mb-2 text-truncate">
+                        {{ $lectura->libro->autor->nombre ?? '' }} {{ $lectura->libro->autor->apellido ?? '' }}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-end mb-1">
+                        <span class="fw-display" style="font-size:1.05rem;color:var(--coral);line-height:1">{{ $lectura->progreso }}%</span>
+                        <span class="text-muted" style="font-size:.7rem">{{ $lectura->paginas_leidas }} / {{ $lectura->libro->total_paginas ?? '?' }} pág.</span>
+                    </div>
+                    <div class="progress" style="height:8px">
+                        <div class="progress-bar" role="progressbar" style="width: {{ $lectura->progreso }}%"></div>
                     </div>
                 </div>
             @empty
@@ -78,15 +70,21 @@
                 <h2 class="section-title" style="font-size:1.2rem"><i class="bi bi-stars"></i> Recomendados</h2>
                 <a href="{{ route('libros.index') }}" class="pill-btn">Ver todo</a>
             </div>
-            <div class="row g-3">
-                @forelse ($recomendaciones->take(6) as $libro)
-                    <div class="col-6">
-                        @include('partials.libro-card', ['libro' => $libro])
+            @forelse ($recomendaciones->take(6) as $libro)
+                <a href="{{ route('libros.show', $libro) }}" class="card mb-2 text-decoration-none">
+                    <div class="card-body py-2 d-flex align-items-center gap-2">
+                        <span class="book flex-shrink-0" style="width:32px">
+                            @include('partials.portada', ['libro' => $libro])
+                        </span>
+                        <span class="flex-grow-1" style="min-width:0">
+                            <span class="book-title d-block text-truncate" style="font-size:.9rem">{{ $libro->titulo }}</span>
+                            <span class="text-muted d-block text-truncate" style="font-size:.7rem">{{ $libro->autor?->nombre }} {{ $libro->autor?->apellido }}</span>
+                        </span>
                     </div>
-                @empty
-                    <p class="text-muted small">Aún no hay recomendaciones.</p>
-                @endforelse
-            </div>
+                </a>
+            @empty
+                <p class="text-muted small">Aún no hay recomendaciones.</p>
+            @endforelse
         </section>
     </div>
 </div>
