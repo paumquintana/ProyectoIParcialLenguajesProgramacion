@@ -7,6 +7,7 @@ use App\Models\Genero;
 use App\Models\Libro;
 use App\Models\Resenia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LibroController extends Controller
 {
@@ -35,28 +36,37 @@ class LibroController extends Controller
             'genero_nuevo'     => ['nullable', 'string', 'max:255'],
         ]);
 
-        // Autor: reutiliza uno existente con el mismo nombre o lo crea.
-        $autor = Autor::firstOrCreate([
-            'nombre'   => $datos['autor_nombre'],
-            'apellido' => $datos['autor_apellido'] ?? null,
-        ]);
+        // TRANSACCIÓN: agregar un libro toca 3 tablas (autores, libros y libro_genero).
+        // Las envolvemos en DB::transaction para que sea ATÓMICO: si falla cualquier
+        // paso, se revierte TODO y no quedan datos a medias (autor sin libro, libro
+        // sin géneros, etc.). O se guardan las tres cosas, o no se guarda ninguna.
+        $libro = DB::transaction(function () use ($datos) {
+            // 1. Autor: reutiliza uno existente con el mismo nombre o lo crea.
+            $autor = Autor::firstOrCreate([
+                'nombre'   => $datos['autor_nombre'],
+                'apellido' => $datos['autor_apellido'] ?? null,
+            ]);
 
-        $libro = Libro::create([
-            'titulo'           => $datos['titulo'],
-            'autor_id'         => $autor->id,
-            'anio_publicacion' => $datos['anio_publicacion'] ?? null,
-            'total_paginas'    => $datos['total_paginas'] ?? null,
-            'isbn'             => $datos['isbn'] ?? null,
-            'sinopsis'         => $datos['sinopsis'] ?? null,
-            'cover_url'        => $datos['cover_url'] ?? null,
-        ]);
+            // 2. Libro.
+            $libro = Libro::create([
+                'titulo'           => $datos['titulo'],
+                'autor_id'         => $autor->id,
+                'anio_publicacion' => $datos['anio_publicacion'] ?? null,
+                'total_paginas'    => $datos['total_paginas'] ?? null,
+                'isbn'             => $datos['isbn'] ?? null,
+                'sinopsis'         => $datos['sinopsis'] ?? null,
+                'cover_url'        => $datos['cover_url'] ?? null,
+            ]);
 
-        // Géneros seleccionados + uno nuevo escrito a mano (opcional).
-        $generosIds = $datos['generos'] ?? [];
-        if (! empty($datos['genero_nuevo'])) {
-            $generosIds[] = Genero::firstOrCreate(['nombre' => trim($datos['genero_nuevo'])])->id;
-        }
-        $libro->generos()->sync($generosIds);
+            // 3. Géneros seleccionados + uno nuevo escrito a mano (opcional).
+            $generosIds = $datos['generos'] ?? [];
+            if (! empty($datos['genero_nuevo'])) {
+                $generosIds[] = Genero::firstOrCreate(['nombre' => trim($datos['genero_nuevo'])])->id;
+            }
+            $libro->generos()->sync($generosIds);
+
+            return $libro;
+        });
 
         return redirect()->route('libros.show', $libro)
             ->with('status', '¡Libro "' . $libro->titulo . '" agregado al catálogo!');

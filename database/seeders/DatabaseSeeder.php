@@ -23,16 +23,16 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            // ===== ELIGE UNA FUENTE DE LIBROS (deja solo UNA activa) =====
+            // Esto es para elegir una base de datos
             //
-            // OPCIÓN A — LOCAL (por defecto): 18 libros curados. Carga rápida.
-            //            Si hay internet, baja la PORTADA real de cada libro;
-            //            si no, usa una portada generada con el título. Siempre funciona.
+            // Opción A — Local (por defecto): 18 libros curados. Carga rápida.
+            //            Si hay internet, baja la portada real de cada libro;
+            //            si no, usa una portada generada con el título. 
             LibrosOfflineSeeder::class,
             //
-            // OPCIÓN B — API Open Library: catálogo más grande bajado por género (~6 min,
+            // Opción B — API Open Library: catálogo más grande bajado por género (~6 min,
             //            requiere internet). Para usarla: comenta la línea de arriba
-            //            (OPCIÓN A) y descomenta la línea de abajo (OPCIÓN B).
+            //            (la opción A) y descomenta la línea de abajo (Opción B).
             // LibroGeneroSeeder::class,
             //
             // =============================================================
