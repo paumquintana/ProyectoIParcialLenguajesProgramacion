@@ -4,10 +4,12 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BibliotecaController;
+use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\LibroController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReseniaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +55,16 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Perfil del usuario (solo lectura)
+    Route::get('perfil', [ProfileController::class, 'show'])->name('perfil.show');
+
+    // Configuración: editar perfil y cambiar contraseña en páginas separadas
+    Route::get('configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
+    Route::get('configuracion/perfil', [ConfiguracionController::class, 'editarPerfil'])->name('configuracion.perfil.edit');
+    Route::patch('configuracion/perfil', [ConfiguracionController::class, 'actualizarPerfil'])->name('configuracion.perfil.update');
+    Route::get('configuracion/password', [ConfiguracionController::class, 'editarPassword'])->name('configuracion.password.edit');
+    Route::put('configuracion/password', [ConfiguracionController::class, 'actualizarPassword'])->name('configuracion.password.update');
 
     // Catálogo y detalle de libros
     Route::get('catalogo', [LibroController::class, 'index'])->name('libros.index');

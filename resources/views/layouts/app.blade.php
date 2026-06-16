@@ -152,6 +152,18 @@
         }
         .pill-btn:hover { background: var(--line); color: var(--ink); }
 
+        /* Menú lateral de la sección Configuración (estilo ajustes) */
+        .settings-nav { display: flex; flex-direction: column; gap: .25rem; }
+        .settings-link {
+            display: flex; align-items: center; gap: .65rem;
+            padding: .65rem .9rem; border-radius: 12px;
+            color: var(--ink); text-decoration: none; font-weight: 600;
+        }
+        .settings-link i { font-size: 1.1rem; color: var(--muted); }
+        .settings-link:hover { background: var(--panel-2); }
+        .settings-link.active { background: var(--coral); color: #fff; }
+        .settings-link.active i { color: #fff; }
+
         .btn-primary {
             --bs-btn-bg: var(--coral); --bs-btn-border-color: var(--coral);
             --bs-btn-hover-bg: var(--coral-d); --bs-btn-hover-border-color: var(--coral-d);
@@ -247,7 +259,7 @@
     <div class="app-shell">
         {{-- ---------- Barra lateral de iconos ---------- --}}
         <aside class="sidebar">
-            <a href="{{ route('dashboard') }}" class="avatar" title="{{ auth()->user()->alias }}">
+            <a href="{{ route('perfil.show') }}" class="avatar" title="Mi perfil">
                 {{ mb_strtoupper(mb_substr(auth()->user()->nombre ?? auth()->user()->alias, 0, 1)) }}
             </a>
 
@@ -258,11 +270,11 @@
 
             <div class="spacer"></div>
 
+            <a href="{{ route('configuracion.index') }}" class="nav-ico {{ str_starts_with($route ?? '', 'configuracion') ? 'active' : '' }}" title="Configuración"><i class="bi bi-gear"></i></a>
             <form method="POST" action="{{ route('logout') }}" class="d-grid">
                 @csrf
                 <button type="submit" class="nav-ico" title="Cerrar sesión"><i class="bi bi-box-arrow-right"></i></button>
             </form>
-            <span class="subscribe">LecturaApp</span>
         </aside>
 
         {{-- ---------- Zona principal ---------- --}}
@@ -284,6 +296,9 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius:1rem">
                         <li><span class="dropdown-item-text text-muted small">{{ auth()->user()->nombre }} {{ auth()->user()->apellido }}</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('perfil.show') }}"><i class="bi bi-person me-1"></i> Mi perfil</a></li>
+                        <li><a class="dropdown-item" href="{{ route('configuracion.index') }}"><i class="bi bi-gear me-1"></i> Configuración</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
