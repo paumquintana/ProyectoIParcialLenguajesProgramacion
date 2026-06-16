@@ -1,103 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LecturaApp — Plataforma de seguimiento de lecturas
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Materia:** Lenguajes de Programación | **Periodo:** 2026-1 | **Estado:** Completado
 
-## LecturaApp — Cómo correr el proyecto
+Aplicación web para descubrir libros, organizar una biblioteca personal, llevar el
+progreso de lectura y participar en grupos de lectura. Construida con Laravel y
+Blade, usa **SQLite** (un solo archivo, sin instalar MySQL) y obtiene las portadas
+desde la API de Open Library con un respaldo generado cuando no hay portada.
 
-App de seguimiento de lecturas (Laravel + Bootstrap). Usa **SQLite**, así que no
-necesitas instalar ni configurar MySQL: la base de datos es un solo archivo y
-funciona igual en cualquier computadora.
+## Equipo de trabajo
 
-### Requisitos
-- PHP 8.2+ y Composer
+- [Paula Martillo](https://github.com/paumquintana)
+- [Daniel Vaca](https://github.com/daniel-vaca13)
 
-### Pasos (primera vez)
+## Capturas / Demo
+
+| Inicio de sesión | Dashboard |
+|---|---|
+| ![Inicio de sesión](capturas/iniciosesion.png) | ![Dashboard](capturas/dashboard.png) |
+
+| Catálogo | Detalle de libro |
+|---|---|
+| ![Catálogo](capturas/catalogo.png) | ![Vista de libro](capturas/libroview.png) |
+
+| Mi biblioteca | Agregar libro |
+|---|---|
+| ![Mi biblioteca](capturas/milibreria.png) | ![Agregar libro](capturas/agregarlibro.png) |
+
+| Grupos de lectura | Mi perfil |
+|---|---|
+| ![Grupos](capturas/grupos.png) | ![Mi perfil](capturas/miperfil.png) |
+
+| Configuración |
+|---|
+| ![Configuración](capturas/configuracion.png) |
+
+## Funcionalidad
+
+- [x] **Autenticación completa**: registro, inicio de sesión y recuperación de contraseña.
+- [x] **Dashboard personalizado**: secciones "Leyendo ahora" (portadas grandes con progreso), "Próximos a leer" y "Recomendados".
+- [x] **Catálogo de libros**: búsqueda por título/autor, filtro por género y alta de libros nuevos.
+- [x] **Detalle de libro con reseñas**: ficha del libro y publicación de reseñas.
+- [x] **Mi biblioteca y progreso**: seguimiento del porcentaje y páginas leídas por lectura.
+- [x] **Grupos de lectura**: unirse a grupos, verlos y publicar mensajes.
+- [x] **Perfil y configuración**: ver perfil, editar datos y cambiar contraseña.
+- [x] **Portadas vía Open Library API**: descarga de portadas reales con respaldo generado.
+
+> Historial completo de cambios: [Commits del repositorio](https://github.com/paumquintana/ProyectoIParcialLenguajesProgramacion/commits)
+
+## Tecnologías
+
+`PHP 8.3` | `Laravel 13` | `Blade` | `Bootstrap 5 (CDN)` | `SQLite` | `Vite` | `Open Library API`
+
+## Ejecución
+
 ```bash
-# 1. Instalar dependencias de PHP
+# 1. Clonar el repositorio
+git clone https://github.com/paumquintana/ProyectoIParcialLenguajesProgramacion.git
+cd ProyectoIParcialLenguajesProgramacion
+
+# 2. Instalar dependencias de PHP
 composer install
 
-# 2. Crear tu archivo .env a partir del ejemplo (ya viene configurado para SQLite)
+# 3. Crear el archivo .env (ya viene configurado para SQLite)
 cp .env.example .env
 
-# 3. Generar la clave de la app
+# 4. Generar la clave de la aplicación
 php artisan key:generate
 
-# 4. Crear el archivo de base de datos SQLite (vacío)
+# 5. Crear el archivo de base de datos SQLite (vacío)
 #    En Windows (PowerShell): New-Item database/database.sqlite
 touch database/database.sqlite
 
-# 5. Crear las tablas y cargar datos de ejemplo (libros offline, no necesita internet)
+# 6. Crear las tablas y cargar datos de ejemplo (offline, sin internet)
 php artisan migrate:fresh --seed
 
-# 6. Levantar el servidor
+# 7. Levantar el servidor
 php artisan serve
 ```
+
 Luego abre la URL que imprime la terminal (normalmente `http://127.0.0.1:8000`).
+El seeder crea un usuario de prueba `test@example.com`; si no recuerdas la
+contraseña, puedes registrarte en `/register`.
 
-### Usuario de prueba
-El seeder crea `test@example.com`. Si no recuerdas la contraseña, créate una
-cuenta nueva en `/register`.
+> Bootstrap se carga por CDN, así que **no** hace falta `npm install` ni `npm run dev`.
 
-### Notas importantes
-- El archivo `.env` **no** se sube a Git (cada quien arma el suyo con `cp .env.example .env`).
-- El archivo `database/database.sqlite` tampoco se sube: por eso cada quien lo crea
-  con el paso 4 y lo llena con el paso 5.
-- Si cambiaste algo en `.env` y no toma efecto, corre `php artisan config:clear`.
-- Bootstrap se carga por CDN, así que **no** hace falta `npm install` ni `npm run dev`.
+## Métricas de Progreso
 
----
+| Indicador | Valor |
+|---|---|
+| Commits totales | 14 |
+| Ramas | 2 (`main`, `paula-martillo`) |
+| Cobertura de pruebas | N/D |
+| Última actualización | 2026-06-16 |
 
-## About Laravel
+## Reflexión y Aprendizajes
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Habilidades desarrolladas:** desarrollo web con Laravel (rutas, controladores, modelos Eloquent, migraciones y seeders), plantillas Blade reutilizables y diseño de interfaz aplicando principios de HCI.
+- **Qué funcionó bien:** usar SQLite simplificó la configuración entre equipos; los partials de Blade (`portada`, `libro-card`) permitieron reutilizar componentes y mantener una interfaz consistente.
+- **Qué se podría mejorar:** agregar pruebas automatizadas, paginación en el catálogo y cacheo de las portadas de Open Library para reducir llamadas externas.
+- **Conceptos clave aplicados de la materia:** patrón MVC, separación de responsabilidades, manejo de relaciones entre entidades y reutilización de código mediante componentes.
