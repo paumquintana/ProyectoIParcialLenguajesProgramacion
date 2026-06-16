@@ -56,6 +56,9 @@ Route::middleware('auth')->group(function () {
 
     // Catálogo y detalle de libros
     Route::get('catalogo', [LibroController::class, 'index'])->name('libros.index');
+    // Agregar un libro nuevo (debe ir ANTES de libros/{libro} para no confundir "crear" con un id).
+    Route::get('libros/crear', [LibroController::class, 'create'])->name('libros.create');
+    Route::post('libros', [LibroController::class, 'store'])->name('libros.store');
     Route::get('libros/{libro}', [LibroController::class, 'show'])->name('libros.show');
 
     // Mi biblioteca

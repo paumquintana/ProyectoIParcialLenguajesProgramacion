@@ -35,7 +35,10 @@
             Catálogo
         @endif
     </h1>
-    <span class="text-muted small">{{ $libros->total() }} libros</span>
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-muted small">{{ $libros->total() }} libros</span>
+        <a href="{{ route('libros.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Agregar libro</a>
+    </div>
 </div>
 
 {{-- ---------- Rejilla de libros ---------- --}}

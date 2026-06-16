@@ -2,10 +2,7 @@
 @section('titulo', 'Inicio')
 
 @section('contenido')
-<div class="d-flex align-items-center gap-2 mb-4">
-    <h1 class="section-title mb-0">Hola, {{ auth()->user()->nombre }}</h1>
-    <span style="font-size:1.4rem">👋</span>
-</div>
+<h1 class="section-title mb-4">Hola, {{ auth()->user()->nombre }}</h1>
 
 {{-- ---------- Leyendo ahora ---------- --}}
 <section class="mb-5">
@@ -18,11 +15,7 @@
         <div class="card mb-3">
             <div class="card-body d-flex gap-3 align-items-center">
                 <a href="{{ route('libros.show', $lectura->libro) }}" class="book flex-shrink-0" style="width:56px">
-                    @if ($lectura->libro->portada_url)
-                        <img src="{{ $lectura->libro->portada_url }}" alt="">
-                    @else
-                        <span class="ph"><i class="bi bi-book"></i></span>
-                    @endif
+                    @include('partials.portada', ['libro' => $lectura->libro])
                 </a>
                 <div class="flex-grow-1">
                     <a href="{{ route('libros.show', $lectura->libro) }}" class="book-title text-decoration-none">

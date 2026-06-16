@@ -179,6 +179,16 @@
             width: 100%; height: 100%; object-fit: cover; display: block;
         }
         .book .ph { display: grid; place-items: center; color: var(--muted); font-size: 2rem; }
+        .book .ph-cover {
+            width: 100%; height: 100%; display: flex; flex-direction: column;
+            justify-content: center; gap: .25rem; padding: .7rem; text-align: center;
+        }
+        .ph-cover-title {
+            font-family: 'Fraunces', serif; color: #fff; font-weight: 600;
+            font-size: .9rem; line-height: 1.15;
+            display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .ph-cover-author { color: rgba(255,255,255,.82); font-size: .72rem; font-weight: 500; }
         .book::after {
             content: ""; position: absolute; top: -2px; right: 16px;
             width: 18px; height: 30px; background: var(--ribbon);

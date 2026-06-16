@@ -23,14 +23,22 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            // Libros locales (NO necesita internet). Confiable para la entrega.
+            // ===== ELIGE UNA FUENTE DE LIBROS (deja solo UNA activa) =====
+            //
+            // OPCIÓN A — LOCAL (por defecto): 18 libros curados. Carga rápida.
+            //            Si hay internet, baja la PORTADA real de cada libro;
+            //            si no, usa una portada generada con el título. Siempre funciona.
             LibrosOfflineSeeder::class,
-
-            // Si tienes internet y prefieres bajar libros reales de Open Library,
-            // comenta la línea de arriba y descomenta la siguiente (~6 min):
+            //
+            // OPCIÓN B — API Open Library: catálogo más grande bajado por género (~6 min,
+            //            requiere internet). Para usarla: comenta la línea de arriba
+            //            (OPCIÓN A) y descomenta la línea de abajo (OPCIÓN B).
             // LibroGeneroSeeder::class,
+            //
+            // =============================================================
 
-            DemoSeeder::class,   // usuario demo + biblioteca, grupos y posts
+            DemoSeeder::class,        // usuario demo + biblioteca, grupos y posts
+            DemoDanielSeeder::class,  // usuario daniel123 leyendo la saga de Dune
         ]);
     }
 }

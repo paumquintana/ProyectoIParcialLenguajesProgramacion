@@ -2,96 +2,61 @@
 
 namespace Database\Seeders;
 
-use App\Models\Grupo;
 use App\Models\LectorLibro;
 use App\Models\Libro;
-use App\Models\Post;
-use App\Models\Resenia;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Usuario dummy "daniel123" para la demostración.
+ * Tiene en estado "leyendo" toda la saga de Dune.
+ *
+ * Se ejecuta DESPUÉS de LibrosOfflineSeeder (necesita los libros ya cargados).
+ * Como persiste vía seeder, vuelve a aparecer en cada `migrate:fresh --seed`.
+ */
 class DemoDanielSeeder extends Seeder
 {
-    /**
-     * Crea un usuario demo con datos de ejemplo:
-     * libros en progreso, biblioteca, reseñas, grupos y posts.
-     * Se ejecuta DESPUÉS de LibroGeneroSeeder (necesita libros ya cargados).
-     */
     public function run(): void
     {
-        // 1. Usuario demo (alias: demo / demo@demo.com / password)
-        $demo = User::firstOrCreate(
-            ['email' => 'demo@demo.com'],
+        // 1. Usuario daniel123.
+        $daniel = User::firstOrCreate(
+            ['email' => 'daniel123@correo.com'],
             [
-                'alias'            => 'demo',
-                'nombre'           => 'Demo',
-                'apellido'         => 'Lector',
-                'fecha_nacimiento' => '2000-01-01',
-                'password'         => Hash::make('password'),
+                'alias'            => 'daniel123',
+                'nombre'           => 'Daniel',
+                'apellido'         => 'Vaca',
+                'fecha_nacimiento' => '2002-03-15',
+                'password'         => Hash::make('123456789'),
             ]
         );
 
-        // 2. Libros de ejemplo (si el catálogo está vacío, no hacemos nada).
-        $libros = Libro::inRandomOrder()->take(6)->get();
-        if ($libros->isEmpty()) {
-            $this->command->warn('No hay libros cargados; se omite la biblioteca demo.');
-            return;
-        }
-
-        // Estados a repartir entre los libros.
-        $plan = ['leyendo', 'leyendo', 'por_leer', 'por_leer', 'terminado', 'terminado'];
-
-        foreach ($libros as $i => $libro) {
-            $estado = $plan[$i] ?? 'por_leer';
-            $total = $libro->total_paginas ?: 300;
-
-            $paginas = match ($estado) {
-                'leyendo'   => (int) round($total * 0.4),
-                'terminado' => $total,
-                default     => 0,
-            };
-
-            $lectura = LectorLibro::firstOrCreate(
-                ['user_id' => $demo->id, 'libro_id' => $libro->id],
-                [
-                    'estado'         => $estado,
-                    'paginas_leidas' => $paginas,
-                    'fecha_comienzo' => $estado !== 'por_leer' ? now()->subDays(20)->toDateString() : null,
-                    'fecha_fin'      => $estado === 'terminado' ? now()->subDays(2)->toDateString() : null,
-                ]
-            );
-
-            // Reseña para los libros terminados.
-            if ($estado === 'terminado') {
-                Resenia::firstOrCreate(
-                    ['lector_libro_id' => $lectura->id],
-                    [
-                        'puntuacion' => rand(4, 5),
-                        'comentario' => 'Una lectura que disfruté mucho, totalmente recomendada.',
-                        'fecha'      => now()->subDays(1)->toDateString(),
-                    ]
-                );
-            }
-        }
-
-        // 3. Grupos de lectura + foro con posts.
-        $grupos = [
-            ['nombre' => 'Club de Fantasía', 'descripcion' => 'Para amantes de mundos mágicos y épicos.'],
-            ['nombre' => 'Ciencia Ficción ETERNA', 'descripcion' => 'Debatimos el futuro, el espacio y la tecnología.'],
+        // 2. Saga de Dune en estado "leyendo", con distinto progreso cada uno.
+        //    [titulo => paginasLeidas]  (las páginas totales vienen del propio libro)
+        $saga = [
+            'Dune'            => 280,  // bien avanzado
+            'Dune: El Mesías' => 120,  // a la mitad
+            'Hijos de Dune'   => 40,   // recién empezado
         ];
 
-        foreach ($grupos as $g) {
-            $grupo = Grupo::firstOrCreate(['nombre' => $g['nombre']], ['descripcion' => $g['descripcion']]);
-            $grupo->lectores()->syncWithoutDetaching([$demo->id]);
+        foreach ($saga as $titulo => $paginasLeidas) {
+            $libro = Libro::where('titulo', $titulo)->first();
+            if (! $libro) {
+                $this->command->warn("DemoDanielSeeder: no se encontró '{$titulo}', se omite.");
+                continue;
+            }
 
-            Post::firstOrCreate([
-                'grupo_id'  => $grupo->id,
-                'user_id'   => $demo->id,
-                'contenido' => '¡Hola a todos! ¿Qué están leyendo esta semana?',
-            ]);
+            LectorLibro::firstOrCreate(
+                ['user_id' => $daniel->id, 'libro_id' => $libro->id],
+                [
+                    'estado'         => 'leyendo',
+                    'paginas_leidas' => min($paginasLeidas, $libro->total_paginas ?? $paginasLeidas),
+                    'fecha_comienzo' => now()->subDays(10)->toDateString(),
+                    'fecha_fin'      => null,
+                ]
+            );
         }
 
-        $this->command->info('Usuario demo creado: demo@demo.com / password');
+        $this->command->info('DemoDanielSeeder: usuario daniel123 / 123456789 leyendo la saga Dune.');
     }
 }

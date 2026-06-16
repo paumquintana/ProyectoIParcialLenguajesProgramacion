@@ -22,11 +22,7 @@
             @forelse ($porEstado->get($clave, collect()) as $lectura)
                 <div class="col-6 col-md-4 col-lg-3 col-xl-2">
                     <a href="{{ route('libros.show', $lectura->libro) }}" class="book mb-2">
-                        @if ($lectura->libro->portada_url)
-                            <img src="{{ $lectura->libro->portada_url }}" alt="">
-                        @else
-                            <span class="ph"><i class="bi bi-book"></i></span>
-                        @endif
+                        @include('partials.portada', ['libro' => $lectura->libro])
                     </a>
                     <a href="{{ route('libros.show', $lectura->libro) }}" class="book-title d-block text-truncate text-decoration-none">{{ $lectura->libro->titulo }}</a>
                     @if ($clave === 'leyendo')

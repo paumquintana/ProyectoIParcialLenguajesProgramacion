@@ -9,11 +9,7 @@
 <div class="row g-4">
     <div class="col-md-3">
         <div class="book">
-            @if ($libro->portada_url)
-                <img src="{{ $libro->portada_url }}" alt="">
-            @else
-                <span class="ph"><i class="bi bi-book"></i></span>
-            @endif
+            @include('partials.portada', ['libro' => $libro])
         </div>
     </div>
     <div class="col-md-9">
