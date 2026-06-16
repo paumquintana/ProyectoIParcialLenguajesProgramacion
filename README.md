@@ -7,6 +7,51 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## LecturaApp — Cómo correr el proyecto
+
+App de seguimiento de lecturas (Laravel + Bootstrap). Usa **SQLite**, así que no
+necesitas instalar ni configurar MySQL: la base de datos es un solo archivo y
+funciona igual en cualquier computadora.
+
+### Requisitos
+- PHP 8.2+ y Composer
+
+### Pasos (primera vez)
+```bash
+# 1. Instalar dependencias de PHP
+composer install
+
+# 2. Crear tu archivo .env a partir del ejemplo (ya viene configurado para SQLite)
+cp .env.example .env
+
+# 3. Generar la clave de la app
+php artisan key:generate
+
+# 4. Crear el archivo de base de datos SQLite (vacío)
+#    En Windows (PowerShell): New-Item database/database.sqlite
+touch database/database.sqlite
+
+# 5. Crear las tablas y cargar datos de ejemplo (libros offline, no necesita internet)
+php artisan migrate:fresh --seed
+
+# 6. Levantar el servidor
+php artisan serve
+```
+Luego abre la URL que imprime la terminal (normalmente `http://127.0.0.1:8000`).
+
+### Usuario de prueba
+El seeder crea `test@example.com`. Si no recuerdas la contraseña, créate una
+cuenta nueva en `/register`.
+
+### Notas importantes
+- El archivo `.env` **no** se sube a Git (cada quien arma el suyo con `cp .env.example .env`).
+- El archivo `database/database.sqlite` tampoco se sube: por eso cada quien lo crea
+  con el paso 4 y lo llena con el paso 5.
+- Si cambiaste algo en `.env` y no toma efecto, corre `php artisan config:clear`.
+- Bootstrap se carga por CDN, así que **no** hace falta `npm install` ni `npm run dev`.
+
+---
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

@@ -2,41 +2,42 @@
 @section('titulo', 'Mi biblioteca')
 
 @section('contenido')
-<h1 class="h3 mb-4">Mi biblioteca</h1>
+<h1 class="section-title mb-4"><i class="bi bi-bookmark-heart"></i> Mi biblioteca</h1>
 
 @php
-    $etiquetas = ['leyendo' => 'Leyendo', 'por_leer' => 'Por leer', 'terminado' => 'Terminados'];
+    $etiquetas = [
+        'leyendo'   => ['Leyendo',     'bi-book-half',     'var(--coral)'],
+        'por_leer'  => ['Por leer',    'bi-hourglass-split','var(--ribbon)'],
+        'terminado' => ['Terminados',  'bi-check2-circle', 'var(--green)'],
+    ];
 @endphp
 
-@foreach ($etiquetas as $clave => $titulo)
-    <section class="mb-4">
-        <h2 class="h5 mb-3">{{ $titulo }}
-            <span class="badge text-bg-secondary">{{ optional($porEstado->get($clave))->count() ?? 0 }}</span>
+@foreach ($etiquetas as $clave => [$titulo, $icono, $color])
+    <section class="mb-5">
+        <h2 class="section-title mb-3" style="font-size:1.2rem">
+            <i class="bi {{ $icono }}" style="color:{{ $color }}"></i> {{ $titulo }}
+            <span class="badge text-bg-secondary align-middle">{{ optional($porEstado->get($clave))->count() ?? 0 }}</span>
         </h2>
-        <div class="row g-3">
+        <div class="row g-4">
             @forelse ($porEstado->get($clave, collect()) as $lectura)
-                <div class="col-6 col-md-3">
-                    <div class="card h-100 shadow-sm">
-                        <a href="{{ route('libros.show', $lectura->libro) }}">
-                            @if ($lectura->libro->portada_url)
-                                <img src="{{ $lectura->libro->portada_url }}" class="card-img-top card-portada" alt="">
-                            @else
-                                <div class="card-portada d-flex align-items-center justify-content-center"><i class="bi bi-book fs-1 text-muted"></i></div>
-                            @endif
-                        </a>
-                        <div class="card-body p-2">
-                            <a href="{{ route('libros.show', $lectura->libro) }}" class="small fw-semibold text-decoration-none d-block">{{ $lectura->libro->titulo }}</a>
-                            @if ($clave === 'leyendo')
-                                <div class="progress mt-1" style="height:12px">
-                                    <div class="progress-bar" style="width: {{ $lectura->progreso }}%"></div>
-                                </div>
-                                <span class="text-muted" style="font-size:.7rem">{{ $lectura->progreso }}%</span>
-                            @endif
+                <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                    <a href="{{ route('libros.show', $lectura->libro) }}" class="book mb-2">
+                        @if ($lectura->libro->portada_url)
+                            <img src="{{ $lectura->libro->portada_url }}" alt="">
+                        @else
+                            <span class="ph"><i class="bi bi-book"></i></span>
+                        @endif
+                    </a>
+                    <a href="{{ route('libros.show', $lectura->libro) }}" class="book-title d-block text-truncate text-decoration-none">{{ $lectura->libro->titulo }}</a>
+                    @if ($clave === 'leyendo')
+                        <div class="progress mt-1" style="height:10px">
+                            <div class="progress-bar" style="width: {{ $lectura->progreso }}%"></div>
                         </div>
-                    </div>
+                        <span class="text-muted" style="font-size:.72rem">{{ $lectura->progreso }}%</span>
+                    @endif
                 </div>
             @empty
-                <p class="text-muted">Nada en esta categoría.</p>
+                <div class="col-12"><p class="text-muted mb-0">Nada en esta categoría.</p></div>
             @endforelse
         </div>
     </section>

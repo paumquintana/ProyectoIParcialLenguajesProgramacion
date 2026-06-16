@@ -2,74 +2,73 @@
 @section('titulo', 'Inicio')
 
 @section('contenido')
-<h1 class="h3 mb-4">Hola, {{ auth()->user()->nombre }} 👋</h1>
+<div class="d-flex align-items-center gap-2 mb-4">
+    <h1 class="section-title mb-0">Hola, {{ auth()->user()->nombre }}</h1>
+    <span style="font-size:1.4rem">👋</span>
+</div>
 
-{{-- Libros que estoy leyendo, con barra de progreso --}}
+{{-- ---------- Leyendo ahora ---------- --}}
 <section class="mb-5">
-    <h2 class="h5 mb-3"><i class="bi bi-bookmark-check"></i> Leyendo ahora</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title"><i class="bi bi-bookmark-check text-coral"></i> Leyendo ahora</h2>
+        <a href="{{ route('biblioteca.index') }}" class="pill-btn">Ver biblioteca</a>
+    </div>
+
     @forelse ($leyendo as $lectura)
-        <div class="card mb-3 shadow-sm">
+        <div class="card mb-3">
             <div class="card-body d-flex gap-3 align-items-center">
-                @if ($lectura->libro->portada_url)
-                    <img src="{{ $lectura->libro->portada_url }}" alt="" style="width:60px" class="rounded">
-                @else
-                    <div class="bg-secondary-subtle rounded d-flex align-items-center justify-content-center" style="width:60px;height:90px">
-                        <i class="bi bi-book"></i>
-                    </div>
-                @endif
+                <a href="{{ route('libros.show', $lectura->libro) }}" class="book flex-shrink-0" style="width:56px">
+                    @if ($lectura->libro->portada_url)
+                        <img src="{{ $lectura->libro->portada_url }}" alt="">
+                    @else
+                        <span class="ph"><i class="bi bi-book"></i></span>
+                    @endif
+                </a>
                 <div class="flex-grow-1">
-                    <a href="{{ route('libros.show', $lectura->libro) }}" class="fw-semibold text-decoration-none">
+                    <a href="{{ route('libros.show', $lectura->libro) }}" class="book-title text-decoration-none">
                         {{ $lectura->libro->titulo }}
                     </a>
-                    <div class="text-muted small mb-1">
+                    <div class="text-muted small mb-2">
                         {{ $lectura->libro->autor->nombre ?? '' }} {{ $lectura->libro->autor->apellido ?? '' }}
                     </div>
-                    <div class="progress" style="height:18px">
-                        <div class="progress-bar" role="progressbar"
-                             style="width: {{ $lectura->progreso }}%">{{ $lectura->progreso }}%</div>
+                    <div class="progress" style="height:14px">
+                        <div class="progress-bar" role="progressbar" style="width: {{ $lectura->progreso }}%"></div>
                     </div>
                     <div class="small text-muted mt-1">
-                        {{ $lectura->paginas_leidas }} / {{ $lectura->libro->total_paginas ?? '?' }} páginas
+                        {{ $lectura->progreso }}% · {{ $lectura->paginas_leidas }} / {{ $lectura->libro->total_paginas ?? '?' }} páginas
                     </div>
                 </div>
             </div>
         </div>
     @empty
-        <p class="text-muted">No tienes libros en curso. Explora el <a href="{{ route('libros.index') }}">catálogo</a>.</p>
+        <div class="promo text-muted">
+            No tienes libros en curso. Explora el <a href="{{ route('libros.index') }}">catálogo</a> para empezar.
+        </div>
     @endforelse
 </section>
 
-{{-- Próximos a leer --}}
+{{-- ---------- Próximos a leer ---------- --}}
 <section class="mb-5">
-    <h2 class="h5 mb-3"><i class="bi bi-hourglass-split"></i> Próximos a leer</h2>
+    <h2 class="section-title mb-3"><i class="bi bi-hourglass-split"></i> Próximos a leer</h2>
     @forelse ($porLeer as $lectura)
-        <span class="badge text-bg-light border me-2 mb-2 p-2">
-            <a href="{{ route('libros.show', $lectura->libro) }}" class="text-decoration-none">{{ $lectura->libro->titulo }}</a>
-        </span>
+        <a href="{{ route('libros.show', $lectura->libro) }}" class="pill-btn d-inline-flex align-items-center gap-1 me-2 mb-2">
+            <i class="bi bi-bookmark"></i> {{ $lectura->libro->titulo }}
+        </a>
     @empty
         <p class="text-muted">Nada pendiente por ahora.</p>
     @endforelse
 </section>
 
-{{-- Recomendaciones según géneros que más lees --}}
+{{-- ---------- Recomendados ---------- --}}
 <section>
-    <h2 class="h5 mb-3"><i class="bi bi-stars"></i> Recomendados para ti</h2>
-    <div class="row g-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title"><i class="bi bi-stars"></i> Recomendados para ti</h2>
+        <a href="{{ route('libros.index') }}" class="pill-btn">Ver todo</a>
+    </div>
+    <div class="row g-4">
         @forelse ($recomendaciones as $libro)
-            <div class="col-6 col-md-3">
-                <div class="card h-100 shadow-sm">
-                    <a href="{{ route('libros.show', $libro) }}">
-                        @if ($libro->portada_url)
-                            <img src="{{ $libro->portada_url }}" class="card-img-top card-portada" alt="">
-                        @else
-                            <div class="card-portada d-flex align-items-center justify-content-center"><i class="bi bi-book fs-1 text-muted"></i></div>
-                        @endif
-                    </a>
-                    <div class="card-body p-2">
-                        <a href="{{ route('libros.show', $libro) }}" class="small fw-semibold text-decoration-none d-block text-truncate">{{ $libro->titulo }}</a>
-                        <span class="text-muted" style="font-size:.75rem">{{ $libro->autor->nombre ?? '' }} {{ $libro->autor->apellido ?? '' }}</span>
-                    </div>
-                </div>
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                @include('partials.libro-card', ['libro' => $libro])
             </div>
         @empty
             <p class="text-muted">Aún no hay recomendaciones.</p>

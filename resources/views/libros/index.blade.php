@@ -2,48 +2,59 @@
 @section('titulo', 'Catálogo')
 
 @section('contenido')
-<h1 class="h3 mb-4">Catálogo</h1>
+@php
+    // Paleta e iconos que rotan para las categorías (estilo foto de referencia).
+    $catColors = ['#ef5d60','#f3a83b','#6bbf8a','#5aa9e6','#8a7fd6','#e0568f','#46b1a8','#f08a5d'];
+    $catIcons  = ['bi-book','bi-emoji-smile','bi-heart','bi-stars','bi-rocket','bi-magic','bi-globe-americas','bi-mortarboard'];
+@endphp
 
-<form method="GET" action="{{ route('libros.index') }}" class="row g-2 mb-4">
-    <div class="col-md-6">
-        <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Buscar por título o autor...">
-    </div>
-    <div class="col-md-4">
-        <select name="genero" class="form-select">
-            <option value="">Todos los géneros</option>
-            @foreach ($generos as $g)
-                <option value="{{ $g->id }}" @selected(request('genero') == $g->id)>{{ $g->nombre }}</option>
-            @endforeach
-        </select>
-    </div>
-    <div class="col-md-2 d-grid">
-        <button class="btn btn-primary">Buscar</button>
-    </div>
-</form>
+{{-- ---------- Fila de categorías ---------- --}}
+<div class="d-flex gap-3 overflow-auto pb-2 mb-4">
+    <a href="{{ route('libros.index', array_filter(['q' => request('q')])) }}"
+       class="chip-cat {{ ! request('genero') ? 'active' : '' }}">
+        <span class="ico" style="background:var(--ink)"><i class="bi bi-grid-3x3-gap"></i></span>
+        Todos
+    </a>
+    @foreach ($generos as $i => $g)
+        <a href="{{ route('libros.index', array_filter(['q' => request('q'), 'genero' => $g->id])) }}"
+           class="chip-cat {{ request('genero') == $g->id ? 'active' : '' }}">
+            <span class="ico" style="background:{{ $catColors[$i % count($catColors)] }}">
+                <i class="bi {{ $catIcons[$i % count($catIcons)] }}"></i>
+            </span>
+            <span class="text-truncate" style="max-width:72px">{{ $g->nombre }}</span>
+        </a>
+    @endforeach
+</div>
 
-<div class="row g-3">
+{{-- ---------- Encabezado ---------- --}}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="section-title">
+        @if (request('q'))
+            Resultados para "{{ request('q') }}"
+        @else
+            Catálogo
+        @endif
+    </h1>
+    <span class="text-muted small">{{ $libros->total() }} libros</span>
+</div>
+
+{{-- ---------- Rejilla de libros ---------- --}}
+<div class="row g-4">
     @forelse ($libros as $libro)
-        <div class="col-6 col-md-3">
-            <div class="card h-100 shadow-sm">
-                <a href="{{ route('libros.show', $libro) }}">
-                    @if ($libro->portada_url)
-                        <img src="{{ $libro->portada_url }}" class="card-img-top card-portada" alt="">
-                    @else
-                        <div class="card-portada d-flex align-items-center justify-content-center"><i class="bi bi-book fs-1 text-muted"></i></div>
-                    @endif
-                </a>
-                <div class="card-body p-2">
-                    <a href="{{ route('libros.show', $libro) }}" class="small fw-semibold text-decoration-none d-block">{{ $libro->titulo }}</a>
-                    <span class="text-muted" style="font-size:.75rem">{{ $libro->autor->nombre ?? '' }} {{ $libro->autor->apellido ?? '' }}</span>
-                </div>
-            </div>
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+            @include('partials.libro-card', ['libro' => $libro])
         </div>
     @empty
-        <p class="text-muted">No se encontraron libros con esos criterios.</p>
+        <div class="col-12">
+            <div class="promo text-center text-muted py-5">
+                <i class="bi bi-search fs-2 d-block mb-2"></i>
+                No se encontraron libros con esos criterios.
+            </div>
+        </div>
     @endforelse
 </div>
 
-<div class="mt-4">
-    {{ $libros->links() }}
+<div class="mt-4 d-flex justify-content-center">
+    {{ $libros->onEachSide(1)->links('pagination::bootstrap-5') }}
 </div>
 @endsection
