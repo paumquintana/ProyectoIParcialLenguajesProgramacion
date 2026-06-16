@@ -37,4 +37,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Grupo::class, 'lector_grupo', 'user_id', 'grupo_id');
     }
 
+
+    public function posts() { return $this->hasMany(Post::class); }
 }

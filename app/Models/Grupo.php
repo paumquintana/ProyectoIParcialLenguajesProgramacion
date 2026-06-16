@@ -17,4 +17,12 @@ class Grupo extends Model
     {
         return $this->belongsToMany(User::class, 'lector_grupo', 'grupo_id', 'user_id');
     }
+
+    /**
+     * Posts (mensajes del foro) publicados en el grupo.
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class)->latest();
+    }
 }
